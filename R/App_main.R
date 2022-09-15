@@ -37,7 +37,7 @@ NASSboard <- function(){
                                        variables),
                     shiny::actionButton("submit", "Submit Query")),
       shiny::column(6,
-                    leaflet::leafletOutput("map") %>%
+                    leaflet::leafletOutput("map", height = 600) %>%
                       shinycssloaders::withSpinner()),
       shiny::column(3,
                     shiny::h3("Status Log", align = "center"),
@@ -55,7 +55,7 @@ NASSboard <- function(){
       if(is_connected()){
         paste0("Internet Connection: ", span("PASSED", style = "color:green"))
       } else {
-        paste0("Internet Connection: ", span("FAILED", style = "color:green"))
+        paste0("Internet Connection: ", span("FAILED", style = "color:red"))
       }
     })
     nass_txt <- reactive({
@@ -67,8 +67,10 @@ NASSboard <- function(){
     observeEvent(input$send, {
       key_txt(format_key(input$key))
     })
-    counties <- shiny::reactive({
-      geojsonio::geojson_read("https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_5m.json", what = "sp")
+    shiny::withProgress(message = "Downloading US County Maps- ", value = 0, {
+      incProgress(1/2, detail = "This may take a minute")
+      counties <- geojsonio::geojson_read("https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_5m.json", what = "sp")
+      counties$longID <- geoid(counties$GEO_ID)
     })
     params <- shiny::reactive({
       list(
@@ -86,33 +88,39 @@ NASSboard <- function(){
         dplyr::rename(STATE = state_fips_code, COUNTY = county_code) %>%
         dplyr::mutate(JOIN = paste0(STATE, "&", COUNTY)) %>%
         dplyr::select(JOIN, Value) %>%
-        dplyr::right_join(data.frame(JOIN = paste0(counties()$STATE,"&",counties()$COUNTY),
-                                     SORT = 1:nrow(counties()))) %>%
+        dplyr::right_join(data.frame(JOIN = paste0(counties$STATE,"&",counties$COUNTY),
+                                     SORT = 1:nrow(counties))) %>%
         dplyr::arrange(SORT)
     })
     querymap <- shiny::reactiveVal(NULL)
     cols <- paletteer::paletteer_c("ggthemes::Classic Green", 30) %>%
       as.character()
     shiny::observeEvent(input$submit, {
-      querymap(cbind(counties(), querydata()$Value))
-      pal <- leaflet::colorNumeric(cols, domain = querydata()$Value)
-      titlestr <- stringr::str_replace_all(input$variable, "-|,", "<br>")
-      leaflet::leafletProxy("map", data = querymap()) %>%
-        leaflet::addTiles() %>%
-        leaflet::addPolygons(
-        fillColor = ~pal(querydata()$Value),
-        weight = 0.01,
-        opacity = 1,
-        color = "black",
-        dashArray = "3",
-        fillOpacity = 0.7,
-        layerId = querydata()$JOIN
-      ) %>%
-        leaflet::addLegend("bottomright", pal = pal, values = querydata()$Value,
-                           title = titlestr, opacity = 1, layerId = "col_leg")
+      withProgress(message = "Processing Query:  ", value = 0, {
+        incProgress(1/2, detail = "Downloading Data from NASS")
+        pal = leaflet::colorNumeric(cols, domain = querydata()$Value)
+        titlestr <- stringr::str_replace_all(input$variable, "-|,", "<br>")
+        incProgress(2/2, detail = "Creating Map")
+        leaflet::leafletProxy("map", data = counties) %>%
+          leaflet::addTiles() %>%
+          leaflet::addPolygons(
+            fillColor = ~pal(querydata()$Value),
+            weight = 0.01,
+            opacity = 1,
+            color = "black",
+            dashArray = "3",
+            fillOpacity = 0.7,
+            layerId = querydata()$JOIN,
+            label = ~format_label(counties$longID, querydata()$Value)
+          ) %>%
+          leaflet::addLegend("bottomright", pal = pal,
+                             values = querydata()$Value,
+                             title = titlestr, opacity = 1, layerId = "col_leg")
+        })
     })
+
     # Updating input parameters
-    observe({
+    shiny::observeEvent(input$species, {
       shiny::updateSelectInput(session, "year",
                                choices = names(NASS[[toupper(input$species)]]),
                                selected = names(NASS[[toupper(input$species)]])[length(names(NASS[[toupper(input$species)]]))])
@@ -135,9 +143,6 @@ NASSboard <- function(){
         leaflet::addTiles() %>%
         leaflet::setView(lat = 39.8283, lng = -98.5795, zoom = 4)
     )
-    # output$debug <- shiny::renderText({
-    #   names(querymap())
-    # })
   }
   shiny::shinyApp(ui = ui, server = server)
 }

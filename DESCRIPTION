@@ -19,9 +19,11 @@ Imports:
     dplyr,
     geojsonio,
     ggthemes,
+    htmltools,
     leaflet,
     magrittr,
     paletteer,
+    purrr,
     shiny,
     shinycssloaders,
     stringr
