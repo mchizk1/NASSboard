@@ -111,8 +111,7 @@ NASSboard <- function(){
             dashArray = "3",
             fillOpacity = 0.7,
             layerId = querydata()$JOIN,
-            label = ~format_label(counties$longID, querydata()$Value)
-          ) %>%
+            label = ~format_label(counties$longID, querydata()$Value, input$variable)) %>%
           leaflet::addLegend("bottomright", pal = pal,
                              values = querydata()$Value,
                              title = titlestr, opacity = 1, layerId = "col_leg")

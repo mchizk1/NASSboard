@@ -31,10 +31,10 @@ geoid <- function(GEO_ID){
   purrr::map_chr(GEO_ID, ~ paste0(dplyr::filter(fips_key, GEO_ID == .)[,c(5,6)], collapse = "-<br>"))
 }
 
-format_label <- function(name, data){
+format_label <- function(name, data, varID){
   number <- formatC(data, format = "f", big.mark = ",", digits = 0)
-  # units <- stringr::str_extract(varID, "(?<=[,-][:space:])([^,-]*)$") %>%
-  #   stringr::str_remove("(Measured[:space:]In[:space:])")
-  paste0(name, "<br>", number) %>%
+  units <- stringr::str_extract(varID, "(?<=[,-][:space:])([^,-]*)$") %>%
+    stringr::str_remove("(Measured[:space:]In[:space:])")
+  paste0(name, "<br>", number, "<br>", units) %>%
     lapply(HTML)
 }

@@ -24,6 +24,7 @@ Imports:
     magrittr,
     paletteer,
     purrr,
+    rnassqs,
     shiny,
     shinycssloaders,
     stringr
