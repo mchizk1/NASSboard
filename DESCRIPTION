@@ -18,6 +18,7 @@ Imports:
     curl,
     dplyr,
     geojsonio,
+    ggplot2,
     ggthemes,
     htmltools,
     leaflet,
