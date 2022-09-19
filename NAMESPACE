@@ -2,4 +2,8 @@
 
 export("%>%")
 export(NASSboard)
+export(format_key)
+export(format_label)
+export(geoid)
+export(summary_report)
 importFrom(magrittr,"%>%")

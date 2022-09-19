@@ -1,4 +1,8 @@
 
+#' Formatting for API key input
+#'
+#' @export
+
 format_key <- function(key_input){
   key_input <- stringr::str_remove_all(key_input, "-") %>%
     toupper() %>%
@@ -27,9 +31,17 @@ format_key <- function(key_input){
   return(key_input)
 }
 
+#' Pairs geo-id's with their state and county names
+#'
+#' @export
+
 geoid <- function(GEO_ID){
   purrr::map_df(GEO_ID, ~ dplyr::filter(fips_key, GEO_ID == .)[,4:6])
 }
+
+#' Formatting for tooltip labels
+#'
+#' @export
 
 format_label <- function(name, data, varID){
   number <- formatC(data, format = "f", big.mark = ",", digits = 0)
@@ -38,6 +50,10 @@ format_label <- function(name, data, varID){
   paste0("<strong>",name, "</strong><br>", number, "<br>", units) %>%
     lapply(HTML)
 }
+
+#' Formatting for html report
+#'
+#' @export
 
 summary_report <- function(data, geo_key, varname, unit, species){
   unit <- tolower(unit)
