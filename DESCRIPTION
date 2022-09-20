@@ -7,7 +7,7 @@ Maintainer: Mason Chizk <mchizk1@gmail.com>
 Description: NASSboard provides a GUI for accessing the USDA-NASS Quick Stats API.
     Specifically, it queries county-level census data, which is collected every
     five years in the US.
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
