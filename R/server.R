@@ -68,7 +68,7 @@ server <- function(input, output, session){
               dashArray = "3",
               fillOpacity = 0.7,
               layerId = querydata()$JOIN,
-              label = ~format_label(counties$longID, querydata()$Value, querydata$unit_desc),
+              label = ~format_label(counties$longID, querydata()$Value, querydata()$unit_desc),
               labelOptions = leaflet::labelOptions(textsize = "15px",
                                                    offset = c(25,0),
                                                    direction = "right"),
