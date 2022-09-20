@@ -31,7 +31,10 @@ ui <- function(){
                     shiny::h3("Status Log", align = "center"),
                     shiny::uiOutput("status"),
                     shiny::h3(htmltools::HTML("<br>Summary"), align = "center"),
-                    shiny::uiOutput("report"))
+                    shiny::uiOutput("report"),
+                    shiny::h3(htmltools::HTML("<br>")),
+                    shiny::conditionalPanel(condition = "input.submit",
+                                            shiny::downloadButton("downloadData", "Download Data")))
     )
   )
 }

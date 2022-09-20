@@ -118,4 +118,23 @@ server <- function(input, output, session){
       leaflet::addTiles() %>%
       leaflet::setView(lat = 39.8283, lng = -98.5795, zoom = 4)
   )
+  out_data <- reactive({
+    data.frame(Commodity = input$species,
+               Variable = input$variable,
+               Year = input$year,
+               Geo_ID = counties$GEO_ID,
+               State_abb = geo_key$state,
+               State_name = geo_key$state_name,
+               County = geo_key$county,
+               Units = querydata()$unit_desc,
+               DataValue = querydata()$Value)
+  })
+  output$downloadData <- downloadHandler(
+      filename = function() {
+        paste('NASSdata-', Sys.Date(), '.csv', sep='')
+      },
+      content = function(con) {
+        write.csv(out_data(), con, row.names = F)
+      }
+    )
 }
