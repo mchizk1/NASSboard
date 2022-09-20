@@ -1,11 +1,12 @@
 Package: NASSboard
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A Dashboard for Mapping NASS Census Data
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Mason Chizk
+Maintainer: Mason Chizk <mchizk1@gmail.com>
+Description: NASSboard provides a GUI for accessing the USDA-NASS Quick Stats API.
+    Specifically, it queries county-level census data, which is collected every
+    five years in the US.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
