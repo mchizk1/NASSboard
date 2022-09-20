@@ -43,10 +43,8 @@ geoid <- function(GEO_ID){
 #'
 #' @export
 
-format_label <- function(name, data, varID){
+format_label <- function(name, data, units){
   number <- formatC(data, format = "f", big.mark = ",", digits = 0)
-  units <- stringr::str_extract(varID, "(?<=[,-][:space:])([^,-]*)$") %>%
-    stringr::str_remove("(Measured[:space:]In[:space:])")
   paste0("<strong>",name, "</strong><br>", number, "<br>", units) %>%
     lapply(HTML)
 }
@@ -65,7 +63,7 @@ summary_report <- function(data, geo_key, varname, unit, species){
     dplyr::group_by(state_name) %>%
     dplyr::summarise(data = sum(data, na.rm = T)) %>%
     dplyr::arrange(desc(data))
-  if(stringr::str_detect(varname, "Measured[:space:]In[:space:]\\$$")){
+  if(stringr::str_detect(varname, "[$]$")){
     nat_f <- paste0("$", formatC(national, format = "f", big.mark = ",", digits = 0))
     st_f <- paste0("$", formatC(states$data[1], format = "f", big.mark = ",", digits = 0))
   } else {
