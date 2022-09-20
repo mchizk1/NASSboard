@@ -23,12 +23,8 @@ server <- function(input, output, session){
     key_txt(format_key(input$key))
   })
   err_txt <- reactiveVal("")
-  shiny::withProgress(message = "Downloading US County Maps- ", value = 0, {
-    incProgress(1/2, detail = "This may take a minute")
-    counties <- geojsonio::geojson_read("https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_5m.json", what = "sp")
-    geo_key <- geoid(counties$GEO_ID)
-    counties$longID <- paste0(geo_key$county, "-<br>", geo_key$state_name)
-  })
+  geo_key <- geoid(counties$GEO_ID)
+  counties$longID <- paste0(geo_key$county, "-<br>", geo_key$state_name)
   params <- shiny::reactive({
     list(
       agg_level_desc = "COUNTY",
