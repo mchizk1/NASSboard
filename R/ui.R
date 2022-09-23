@@ -3,6 +3,13 @@ ui <- function(){
     stringr::str_to_title()
   variables <- NASS$ALMONDS[[length(NASS$ALMONDS)]] %>%
     stringr::str_to_title()
+  noaa_ops <- list(None = NA,
+                   Precipitation = "PRCP",
+                   "Average Temperature" = "TAVG",
+                   "Minimum Temperature" = "TMIN",
+                   "Maximum Temperature" = "TMAX",
+                   "Growing Degree Days" = "HTDD",
+                   "Cold Degree Days" = "CLDD")
   shiny::fluidPage(
     theme = bslib::bs_theme(bootswatch = "darkly"),
     shiny::titlePanel(

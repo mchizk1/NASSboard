@@ -4,7 +4,7 @@
 \alias{format_label}
 \title{Formatting for tooltip labels}
 \usage{
-format_label(name, data, varID)
+format_label(name, data, units)
 }
 \description{
 Formatting for tooltip labels
