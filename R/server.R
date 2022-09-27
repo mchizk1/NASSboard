@@ -44,7 +44,8 @@ server <- function(input, output, session){
         dplyr::select(JOIN, Value, unit_desc) %>%
         dplyr::right_join(data.frame(JOIN = paste0(counties$STATE,"&",counties$COUNTY),
                                      SORT = 1:nrow(counties)), by = "JOIN") %>%
-        dplyr::arrange(SORT)
+        dplyr::arrange(SORT) %>%
+        dplyr::mutate(Adjusted = (Value/counties$CENSUSAREA)*100)
     )
   })
   querymap <- shiny::reactiveVal(NULL)
@@ -55,13 +56,16 @@ server <- function(input, output, session){
       incProgress(1/2, detail = "Downloading Data from NASS")
       if(is.data.frame(querydata())){
         if(sum(querydata()$Value, na.rm = T) > 0){
-          pal = leaflet::colorNumeric(cols, domain = querydata()$Value)
-          titlestr <- stringr::str_replace_all(input$variable, "-|,", "<br>")
+          pal = leaflet::colorNumeric(cols, domain = querydata()$Adjusted)
+          titlestr <- querydata()$unit_desc %>%
+            unique() %>%
+            na.omit() %>%
+            paste0(" Per 100 Square Miles")
           incProgress(2/2, detail = "Creating Map")
           leaflet::leafletProxy("map", data = counties) %>%
             leaflet::addTiles() %>%
             leaflet::addPolygons(
-              fillColor = ~pal(querydata()$Value),
+              fillColor = ~pal(querydata()$Adjusted),
               weight = 0.1,
               opacity = 1,
               color = "black",
