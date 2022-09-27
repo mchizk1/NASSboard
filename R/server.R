@@ -82,7 +82,7 @@ server <- function(input, output, session){
                                                            fillOpacity = 0.7,
                                                            bringToFront = TRUE)) %>%
             leaflet::addLegend("bottomright", pal = pal,
-                               values = querydata()$Value,
+                               values = querydata()$Adjusted,
                                title = titlestr, opacity = 1, layerId = "col_leg")
           output$report <- renderUI({
             summary_report(querydata()$Value, geo_key, input$variable,
