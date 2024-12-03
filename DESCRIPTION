@@ -10,7 +10,7 @@ Description: NASSboard provides a GUI for accessing the USDA-NASS Quick Stats AP
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
 Imports: 
